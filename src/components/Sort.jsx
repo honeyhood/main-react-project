@@ -1,13 +1,19 @@
+import { nanoid } from "nanoid";
 import React, { useState } from "react";
 
-function Sort() {
+function Sort({ value, onChangeSort }) {
   const [open, setOpen] = useState(false);
-  const [selectedSort, setSelectedSort] = useState(0);
-  const list = ["популярности", "цене", "алфавиту"];
-  const sortName = list[selectedSort];
+  const list = [
+    { name: "популярности ⬇️", sortProperty: "rating" },
+    { name: "популярности ⬆️", sortProperty: "-rating" },
+    { name: "цене ⬇️", sortProperty: "price" },
+    { name: "цене ⬆️", sortProperty: "-price" },
+    { name: "алфавиту ⬇️", sortProperty: "title" },
+    { name: "алфавиту ⬆️", sortProperty: "-title" },
+  ];
 
   const onClickSortType = (i) => {
-    setSelectedSort(i);
+    onChangeSort(i);
     setOpen(false);
   };
 
@@ -27,18 +33,20 @@ function Sort() {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setOpen(!open)}>{sortName}</span>
+        <span onClick={() => setOpen(!open)}>{value.name}</span>
       </div>
       {open && (
         <div className="sort__popup">
           <ul>
-            {list.map((listItem, i) => (
+            {list.map((obj) => (
               <li
-                key={listItem}
-                onClick={() => onClickSortType(i)}
-                className={selectedSort === i ? "active" : ""}
+                key={nanoid()}
+                onClick={() => onClickSortType(obj)}
+                className={
+                  value.sortProperty === obj.sortProperty ? "active" : ""
+                }
               >
-                {listItem}
+                {obj.name}
               </li>
             ))}
           </ul>
