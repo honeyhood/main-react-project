@@ -1,19 +1,25 @@
 import { nanoid } from "nanoid";
 import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setSortType } from "../redux/slices/filterSlice";
 
-function Sort({ value, onChangeSort }) {
+const list = [
+  { name: "популярности ⬇️", sortProperty: "rating" },
+  { name: "популярности ⬆️", sortProperty: "-rating" },
+  { name: "цене ⬇️", sortProperty: "price" },
+  { name: "цене ⬆️", sortProperty: "-price" },
+  { name: "алфавиту ⬇️", sortProperty: "title" },
+  { name: "алфавиту ⬆️", sortProperty: "-title" },
+];
+
+function Sort() {
   const [open, setOpen] = useState(false);
-  const list = [
-    { name: "популярности ⬇️", sortProperty: "rating" },
-    { name: "популярности ⬆️", sortProperty: "-rating" },
-    { name: "цене ⬇️", sortProperty: "price" },
-    { name: "цене ⬆️", sortProperty: "-price" },
-    { name: "алфавиту ⬇️", sortProperty: "title" },
-    { name: "алфавиту ⬆️", sortProperty: "-title" },
-  ];
 
-  const onClickSortType = (i) => {
-    onChangeSort(i);
+  const sortType = useSelector((state) => state.filter.sortType);
+  const dispatch = useDispatch();
+
+  const onClickSortType = (obj) => {
+    dispatch(setSortType(obj));
     setOpen(false);
   };
 
@@ -33,7 +39,7 @@ function Sort({ value, onChangeSort }) {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setOpen(!open)}>{value.name}</span>
+        <span onClick={() => setOpen(!open)}>{sortType.name}</span>
       </div>
       {open && (
         <div className="sort__popup">
@@ -43,7 +49,7 @@ function Sort({ value, onChangeSort }) {
                 key={nanoid()}
                 onClick={() => onClickSortType(obj)}
                 className={
-                  value.sortProperty === obj.sortProperty ? "active" : ""
+                  sortType.sortProperty === obj.sortProperty ? "active" : ""
                 }
               >
                 {obj.name}
