@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 import React from "react";
 
-function Categories({ value, onChangeCategory }) {
+export const Categories = ({ value, onChangeCategory }) => {
   const categories = ["Все", "Мясные", "Вегетарианская", "Острые", "Комбо"];
 
   return (
@@ -21,6 +21,4 @@ function Categories({ value, onChangeCategory }) {
       </ul>
     </div>
   );
-}
-
-export default Categories;
+};

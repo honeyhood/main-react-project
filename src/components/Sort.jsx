@@ -3,19 +3,19 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setSortType } from "../redux/slices/filterSlice";
 
-const list = [
-  { name: "популярности ⬇️", sortProperty: "rating" },
-  { name: "популярности ⬆️", sortProperty: "-rating" },
-  { name: "цене ⬇️", sortProperty: "price" },
-  { name: "цене ⬆️", sortProperty: "-price" },
-  { name: "алфавиту ⬇️", sortProperty: "title" },
-  { name: "алфавиту ⬆️", sortProperty: "-title" },
+export const sortList = [
+  { name: "популярности ⬇", sortProperty: "rating" },
+  { name: "популярности ⬆", sortProperty: "-rating" },
+  { name: "цене ⬇", sortProperty: "price" },
+  { name: "цене ⬆", sortProperty: "-price" },
+  { name: "алфавиту ⬇", sortProperty: "title" },
+  { name: "алфавиту ⬆", sortProperty: "-title" },
 ];
 
-function Sort() {
+export const Sort = () => {
   const [open, setOpen] = useState(false);
 
-  const sortType = useSelector((state) => state.filter.sortType);
+  const { sortType } = useSelector((state) => state.filter);
   const dispatch = useDispatch();
 
   const onClickSortType = (obj) => {
@@ -44,7 +44,7 @@ function Sort() {
       {open && (
         <div className="sort__popup">
           <ul>
-            {list.map((obj) => (
+            {sortList.map((obj) => (
               <li
                 key={nanoid()}
                 onClick={() => onClickSortType(obj)}
@@ -60,6 +60,4 @@ function Sort() {
       )}
     </div>
   );
-}
-
-export default Sort;
+};
