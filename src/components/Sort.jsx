@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setSortType } from "../redux/slices/filterSlice";
 
@@ -17,14 +18,26 @@ export const Sort = () => {
 
   const { sortType } = useSelector((state) => state.filter);
   const dispatch = useDispatch();
+  const sortRef = useRef();
 
   const onClickSortType = (obj) => {
     dispatch(setSortType(obj));
     setOpen(false);
   };
 
+  useEffect(() => {
+    const handleClickPopup = (event) => {
+      if (!event.path.includes(sortRef.current)) {
+        setOpen(false);
+      }
+    };
+    document.body.addEventListener("click", handleClickPopup);
+
+    return () => document.body.removeEventListener("click", handleClickPopup);
+  }, []);
+
   return (
-    <div className="sort">
+    <div ref={sortRef} className="sort">
       <div className="sort__label">
         <svg
           width="10"
