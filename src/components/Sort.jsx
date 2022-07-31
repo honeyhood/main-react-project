@@ -2,7 +2,7 @@ import { nanoid } from "nanoid";
 import React, { useState, useEffect } from "react";
 import { useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setSortType } from "../redux/slices/filterSlice";
+import { filterSelector, setSortType } from "../redux/slices/filterSlice";
 
 export const sortList = [
   { name: "популярности ⬇", sortProperty: "rating" },
@@ -16,7 +16,7 @@ export const sortList = [
 export const Sort = () => {
   const [open, setOpen] = useState(false);
 
-  const { sortType } = useSelector((state) => state.filter);
+  const { sortType } = useSelector(filterSelector);
   const dispatch = useDispatch();
   const sortRef = useRef();
 

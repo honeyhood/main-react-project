@@ -1,43 +1,44 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setCategoryId } from "../redux/slices/filterSlice";
+import { filterSelector, setCategoryId } from "../redux/slices/filterSlice";
 import { Categories } from "../components/Categories";
 import { Sort } from "../components/Sort";
 import { PizzaBlock } from "../components/PizzaBlock";
 import { Skeleton } from "../components/PizzaBlock/Skeleton";
 import { nanoid } from "nanoid";
 import { Pagination } from "../components/Pagination";
-import axios from "axios";
+import { fetchPizzas, pizzaSelector } from "../redux/slices/pizzaSlice";
 
 const Home = () => {
-  const { categoryId, sortType, searchValue, currentPage } = useSelector(
-    (state) => state.filter
-  );
+  const { categoryId, sortType, searchValue, currentPage } =
+    useSelector(filterSelector);
+  const { items, status } = useSelector(pizzaSelector);
   const dispatch = useDispatch();
 
   // const navigate = useNavigate();
   // const isSearch = useRef(false);
   // const isMounted = useRef(false);
 
-  const [items, setItems] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    setIsLoading(true);
-
+  const getPizzas = async () => {
     const category = categoryId > 0 ? `category=${categoryId}` : "";
     const sortBy = sortType.sortProperty.replace("-", "");
     const order = sortType.sortProperty.includes("-") ? "asc" : "desc";
     const search = searchValue ? `&search=${searchValue}` : "";
 
-    axios
-      .get(
-        `https://62bb5f6b7bdbe01d529cb308.mockapi.io/items?page=${currentPage}&limit=4&${category}&sortBy=${sortBy}&order=${order}${search}`
-      )
-      .then((res) => {
-        setItems(res.data);
-        setIsLoading(false);
-      });
+    dispatch(
+      fetchPizzas({
+        category,
+        sortBy,
+        order,
+        search,
+        currentPage,
+      })
+    );
+  };
+
+  useEffect(() => {
+    getPizzas();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoryId, sortType.sortProperty, searchValue, currentPage]);
 
   // useEffect(() => {
@@ -99,7 +100,15 @@ const Home = () => {
         <Sort />
       </div>
       <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">{isLoading ? skeletons : pizzas}</div>
+      {status === "error" ? (
+        <div className="content__error-info">
+          <h2>Произошла ошибка при получении пицц</h2>
+        </div>
+      ) : (
+        <div className="content__items">
+          {status === "loading" ? skeletons : pizzas}
+        </div>
+      )}
       <Pagination />
     </div>
   );
