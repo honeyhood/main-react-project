@@ -1,10 +1,19 @@
 import { nanoid } from "nanoid";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import { useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { filterSelector, setSortType } from "../redux/slices/filterSlice";
+import { useDispatch } from "react-redux";
+import { setSortType } from "../redux/slices/filter/filterSlice";
+import { SortType } from "../redux/slices/filter/types";
 
-export const sortList = [
+type SortPopupProps = {
+  value: SortType;
+};
+
+type PopupClick = MouseEvent & {
+  path: Node[];
+};
+
+export const sortList: SortType[] = [
   { name: "популярности ⬇", sortProperty: "rating" },
   { name: "популярности ⬆", sortProperty: "-rating" },
   { name: "цене ⬇", sortProperty: "price" },
@@ -13,21 +22,21 @@ export const sortList = [
   { name: "алфавиту ⬆", sortProperty: "-title" },
 ];
 
-export const Sort = () => {
+export const Sort: React.FC<SortPopupProps> = memo(({ value }) => {
   const [open, setOpen] = useState(false);
 
-  const { sortType } = useSelector(filterSelector);
   const dispatch = useDispatch();
-  const sortRef = useRef();
+  const sortRef = useRef<HTMLDivElement>(null);
 
-  const onClickSortType = (obj) => {
+  const onClickSortType = (obj: SortType) => {
     dispatch(setSortType(obj));
     setOpen(false);
   };
 
   useEffect(() => {
-    const handleClickPopup = (event) => {
-      if (!event.path.includes(sortRef.current)) {
+    const handleClickPopup = (event: MouseEvent) => {
+      const _event = event as PopupClick;
+      if (sortRef.current && !_event.path.includes(sortRef.current)) {
         setOpen(false);
       }
     };
@@ -52,7 +61,7 @@ export const Sort = () => {
           />
         </svg>
         <b>Сортировка по:</b>
-        <span onClick={() => setOpen(!open)}>{sortType.name}</span>
+        <span onClick={() => setOpen(!open)}>{value.name}</span>
       </div>
       {open && (
         <div className="sort__popup">
@@ -62,7 +71,7 @@ export const Sort = () => {
                 key={nanoid()}
                 onClick={() => onClickSortType(obj)}
                 className={
-                  sortType.sortProperty === obj.sortProperty ? "active" : ""
+                  value.sortProperty === obj.sortProperty ? "active" : ""
                 }
               >
                 {obj.name}
@@ -73,4 +82,4 @@ export const Sort = () => {
       )}
     </div>
   );
-};
+});

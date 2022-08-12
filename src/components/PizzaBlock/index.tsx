@@ -1,8 +1,27 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addItem, cartItemsByIdSelector } from "../../redux/slices/cartSlice";
+import { Link } from "react-router-dom";
+import { addItem } from "../../redux/slices/cart/cartSlice";
+import { cartItemsByIdSelector } from "../../redux/slices/cart/selectors";
+import { CartItemType } from "../../redux/slices/cart/types";
 
-export const PizzaBlock = ({ id, title, price, imageUrl, sizes, types }) => {
+type PizzaBlockProps = {
+  id: string;
+  title: string;
+  price: number;
+  imageUrl: string;
+  sizes: number[];
+  types: number[];
+};
+
+export const PizzaBlock: React.FC<PizzaBlockProps> = ({
+  id,
+  title,
+  price,
+  imageUrl,
+  sizes,
+  types,
+}) => {
   const [activeType, setActiveType] = useState(0);
   const [activeSize, setActiveSize] = useState(0);
 
@@ -13,26 +32,29 @@ export const PizzaBlock = ({ id, title, price, imageUrl, sizes, types }) => {
   //   obj.id === id && obj.type === activeType && obj.size === activeSize
   // );
 
-  const addedCount = cartItem ? cartItem.count : 0; //тут можно доделать (поменятю types и sizes маппинги)
+  const addedCount = cartItem ? cartItem.count : 0; //тут можно доделать (поменять types и sizes маппинги)
 
   const typeNames = ["тонкое", "традиционное"];
   const sizeValues = ["26 см", "30 см", "40 см"];
 
   const onClickAdd = () => {
-    const item = {
+    const item: CartItemType = {
       id,
       title,
       price,
       imageUrl,
       type: typeNames[activeType],
       size: sizeValues[activeSize],
+      count: 0,
     };
     dispatch(addItem(item));
   };
   return (
     <div className="pizza-block">
-      <img className="pizza-block__image" src={imageUrl} alt="Pizza" />
-      <h4 className="pizza-block__title">{title}</h4>
+      <Link to={`/pizza/${id}`}>
+        <img className="pizza-block__image" src={imageUrl} alt="Pizza" />
+        <h4 className="pizza-block__title">{title}</h4>
+      </Link>
       <div className="pizza-block__selector">
         <ul>
           {types.map((typeId) => (

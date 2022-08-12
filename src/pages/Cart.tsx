@@ -1,15 +1,18 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import CartItem from "../components/CartItem";
 import { v4 as uuidv4 } from "uuid";
-import { cartSelector, clearItems } from "../redux/slices/cartSlice";
+import { clearItems } from "../redux/slices/cart/cartSlice";
 import CartEmpty from "../components/CartEmpty";
+import { cartSelector } from "../redux/slices/cart/selectors";
 
-export const Cart = () => {
+export const Cart: React.FC = () => {
   const dispatch = useDispatch();
   const { totalPrice, items } = useSelector(cartSelector);
-  const totalCount = items.reduce((sum, item) => sum + item.count, 0);
+  const totalCount = items.reduce(
+    (sum: number, item: any) => sum + item.count,
+    0
+  );
 
   const onClickClear = () => {
     if (window.confirm("Вы действительно хотите удалить все товары?")) {
@@ -98,7 +101,7 @@ export const Cart = () => {
           </div>
         </div>
         <div className="content__items">
-          {items.map((item) => (
+          {items.map((item: any) => (
             <CartItem key={uuidv4()} {...item} />
           ))}
         </div>

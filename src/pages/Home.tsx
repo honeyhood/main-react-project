@@ -1,19 +1,22 @@
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { filterSelector, setCategoryId } from "../redux/slices/filterSlice";
+import { useCallback, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { setCategoryId } from "../redux/slices/filter/filterSlice";
 import { Categories } from "../components/Categories";
 import { Sort } from "../components/Sort";
 import { PizzaBlock } from "../components/PizzaBlock";
 import { Skeleton } from "../components/PizzaBlock/Skeleton";
 import { nanoid } from "nanoid";
 import { Pagination } from "../components/Pagination";
-import { fetchPizzas, pizzaSelector } from "../redux/slices/pizzaSlice";
+import { fetchPizzas } from "../redux/slices/pizza/pizzaSlice";
+import { useAppDispatch } from "../redux/store";
+import { filterSelector } from "../redux/slices/filter/selectors";
+import { pizzaSelector } from "../redux/slices/pizza/selectors";
 
-const Home = () => {
+const Home: React.FC = () => {
   const { categoryId, sortType, searchValue, currentPage } =
     useSelector(filterSelector);
   const { items, status } = useSelector(pizzaSelector);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   // const navigate = useNavigate();
   // const isSearch = useRef(false);
@@ -80,24 +83,25 @@ const Home = () => {
   //   isSearch.current = false;
   // }, [categoryId, searchValue, sortType.sortProperty, currentPage]);
 
+  const onChangeCategory = useCallback((i: number) => {
+    dispatch(setCategoryId(i));
+  }, []);
+
   const skeletons = [...new Array(6)].map(() => <Skeleton key={nanoid()} />);
   const pizzas = items
-    .filter((obj) => {
+    .filter((obj: any) => {
       if (obj.title.toLowerCase().includes(searchValue.toLowerCase())) {
         return true;
       }
       return false;
     })
-    .map((obj) => <PizzaBlock key={nanoid()} {...obj} />);
+    .map((obj: any) => <PizzaBlock key={nanoid()} {...obj} />);
 
   return (
     <div className="container">
       <div className="content__top">
-        <Categories
-          value={categoryId}
-          onChangeCategory={(i) => dispatch(setCategoryId(i))}
-        />
-        <Sort />
+        <Categories value={categoryId} onChangeCategory={onChangeCategory} />
+        <Sort value={sortType} />
       </div>
       <h2 className="content__title">Все пиццы</h2>
       {status === "error" ? (
