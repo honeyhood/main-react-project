@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import Search from "./Search";
 import { useSelector } from "react-redux";
 import { useEffect, useRef } from "react";
-import { cartSelector } from "../redux/slices/cart/selectors";
+import { cartSelector } from "../redux/cart/selectors";
 
 function Header() {
   const { items, totalPrice } = useSelector(cartSelector);

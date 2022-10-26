@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
-import { addItem, minusItem, removeItem } from "../redux/slices/cart/cartSlice";
-import { CartItemType } from "../redux/slices/cart/types";
+import { addItem, minusItem, removeItem } from "../redux/cart/cartSlice";
+import { CartItemType } from "../redux/cart/types";
 
 type CartItemProps = {
   id: string;

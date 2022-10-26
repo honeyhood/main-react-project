@@ -2,8 +2,8 @@ import { nanoid } from "nanoid";
 import React, { useState, useEffect, memo } from "react";
 import { useRef } from "react";
 import { useDispatch } from "react-redux";
-import { setSortType } from "../redux/slices/filter/filterSlice";
-import { SortType } from "../redux/slices/filter/types";
+import { setSortType } from "../redux/filter/filterSlice";
+import { SortType } from "../redux/filter/types";
 
 type SortPopupProps = {
   value: SortType;

@@ -1,16 +1,16 @@
 import { useCallback, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { setCategoryId } from "../redux/slices/filter/filterSlice";
+import { setCategoryId } from "../redux/filter/filterSlice";
 import { Categories } from "../components/Categories";
 import { Sort } from "../components/Sort";
 import { PizzaBlock } from "../components/PizzaBlock";
 import { Skeleton } from "../components/PizzaBlock/Skeleton";
 import { nanoid } from "nanoid";
 import { Pagination } from "../components/Pagination";
-import { fetchPizzas } from "../redux/slices/pizza/pizzaSlice";
+import { fetchPizzas } from "../redux/pizza/asyncActions";
 import { useAppDispatch } from "../redux/store";
-import { filterSelector } from "../redux/slices/filter/selectors";
-import { pizzaSelector } from "../redux/slices/pizza/selectors";
+import { filterSelector } from "../redux/filter/selectors";
+import { pizzaSelector } from "../redux/pizza/selectors";
 
 const Home: React.FC = () => {
   const { categoryId, sortType, searchValue, currentPage } =
@@ -85,6 +85,7 @@ const Home: React.FC = () => {
 
   const onChangeCategory = useCallback((i: number) => {
     dispatch(setCategoryId(i));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const skeletons = [...new Array(6)].map(() => <Skeleton key={nanoid()} />);
